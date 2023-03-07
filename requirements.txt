@@ -1,0 +1,12 @@
+asgiref==3.6.0
+diploma-frontend @ file:///home/kate/PycharmProjects/python_django_diploma/diploma-frontend-0.2.tar.gz
+Django==4.1.7
+django-phonenumber-field==7.0.2
+flake8==6.0.0
+isort==5.12.0
+mccabe==0.7.0
+phonenumbers==8.13.7
+Pillow==9.4.0
+pycodestyle==2.10.0
+pyflakes==3.0.1
+sqlparse==0.4.3
