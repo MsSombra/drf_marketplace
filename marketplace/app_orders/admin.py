@@ -1,5 +1,6 @@
 from django.contrib import admin
-from app_orders.models import OrderStatus, PaymentType, DeliveryType, Order
+
+from app_orders.models import DeliveryType, Order, OrderStatus, PaymentType
 
 
 @admin.register(OrderStatus)

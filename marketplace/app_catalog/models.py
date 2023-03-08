@@ -1,4 +1,5 @@
 from django.db import models
+
 from app_account.models import Profile
 
 
@@ -50,6 +51,9 @@ class Product(models.Model):
         verbose_name = "товар"
         verbose_name_plural = "товары"
         index_together = (("id", "slug"),)
+
+    def get_absolute_url(self):
+        pass
 
 
 class ProductImage(models.Model):

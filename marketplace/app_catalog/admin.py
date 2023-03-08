@@ -1,5 +1,7 @@
 from django.contrib import admin
-from app_catalog.models import Category, Specification, Product, ProductImage, Review
+
+from app_catalog.models import (Category, Product, ProductImage, Review,
+                                Specification)
 
 
 @admin.register(Category)

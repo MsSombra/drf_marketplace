@@ -1,6 +1,7 @@
 from django.db import models
-from app_catalog.models import Product
+
 from app_account.models import Profile
+from app_catalog.models import Product
 
 
 class PaymentType(models.Model):
@@ -49,3 +50,9 @@ class Order(models.Model):
                                on_delete=models.PROTECT)
     city = models.CharField(max_length=40, verbose_name="город")
     address = models.CharField(max_length=40, verbose_name="адрес")
+
+
+class ProductsInOrder(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, verbose_name="товар")
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, verbose_name="заказ")
+    amount = models.PositiveIntegerField(verbose_name="количество товара в заказе")
