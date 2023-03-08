@@ -1,29 +1,7 @@
-from django.db import models
-
 from app_account.models import Profile
 from app_catalog.models import Product
-
-
-class PaymentType(models.Model):
-    title = models.CharField(max_length=40, verbose_name="название")
-
-    class Meta:
-        verbose_name = "тип оплаты"
-        verbose_name_plural = "типы оплаты"
-
-    def __str__(self):
-        return self.title
-
-
-class DeliveryType(models.Model):
-    title = models.CharField(max_length=40, verbose_name="название")
-
-    class Meta:
-        verbose_name = "тип доставки"
-        verbose_name_plural = "типы доставки"
-
-    def __str__(self):
-        return self.title
+from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class OrderStatus(models.Model):
@@ -40,11 +18,12 @@ class OrderStatus(models.Model):
 class Order(models.Model):
     products = models.ManyToManyField(Product, related_name="orders", verbose_name="товары")
     buyer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="orders", verbose_name="покупатель")
+    full_name = models.CharField(max_length=100, db_index=True, verbose_name="ФИО")
+    email = models.EmailField(max_length=50, blank=True, verbose_name="электронная почта")
+    phone = PhoneNumberField(unique=True, null=False, blank=False, verbose_name="номер телефона")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
-    payment_type = models.ForeignKey(PaymentType, related_name="orders", verbose_name="тип оплаты",
-                                     on_delete=models.PROTECT)
-    delivery_type = models.ForeignKey(DeliveryType, related_name="orders", verbose_name="тип доставки",
-                                      on_delete=models.PROTECT)
+    payment_type = models.CharField(max_length=15, verbose_name="тип оплаты")
+    delivery_type = models.CharField(max_length=15, verbose_name="тип доставки")
     total_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="сумма заказа")
     status = models.ForeignKey(OrderStatus, related_name="orders", verbose_name="статус заказа",
                                on_delete=models.PROTECT)

@@ -1,9 +1,8 @@
 from decimal import Decimal
 
+from app_catalog.models import Product
 from django.conf import settings
 from django.http import HttpRequest
-
-from app_catalog.models import Product
 
 
 class Cart(object):

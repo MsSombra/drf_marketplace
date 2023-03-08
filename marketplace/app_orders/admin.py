@@ -1,22 +1,9 @@
+from app_orders.models import Order, OrderStatus
 from django.contrib import admin
-
-from app_orders.models import DeliveryType, Order, OrderStatus, PaymentType
 
 
 @admin.register(OrderStatus)
 class OrderStatusAdmin(admin.ModelAdmin):
-    list_display = "pk", "title"
-    list_display_links = "pk", "title"
-
-
-@admin.register(PaymentType)
-class PaymentTypeAdmin(admin.ModelAdmin):
-    list_display = "pk", "title"
-    list_display_links = "pk", "title"
-
-
-@admin.register(DeliveryType)
-class DeliveryTypeAdmin(admin.ModelAdmin):
     list_display = "pk", "title"
     list_display_links = "pk", "title"
 
