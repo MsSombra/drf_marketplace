@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'app_cart.apps.AppCartConfig',
     'app_catalog.apps.AppCatalogConfig',
     'app_orders.apps.AppOrdersConfig',
+    'app_payment.apps.AppPaymentConfig',
     'phonenumber_field',
 ]
 

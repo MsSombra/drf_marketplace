@@ -16,19 +16,19 @@ class OrderStatus(models.Model):
 
 
 class Order(models.Model):
-    products = models.ManyToManyField(Product, related_name="orders", verbose_name="товары")
-    buyer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="orders", verbose_name="покупатель")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
     full_name = models.CharField(max_length=100, db_index=True, verbose_name="ФИО")
     email = models.EmailField(max_length=50, blank=True, verbose_name="электронная почта")
     phone = PhoneNumberField(unique=True, null=False, blank=False, verbose_name="номер телефона")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
-    payment_type = models.CharField(max_length=15, verbose_name="тип оплаты")
-    delivery_type = models.CharField(max_length=15, verbose_name="тип доставки")
-    total_cost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="сумма заказа")
+    buyer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="orders", verbose_name="покупатель")
+    deliveryType = models.CharField(max_length=30, verbose_name="тип доставки")
+    paymentType = models.CharField(max_length=30, verbose_name="тип оплаты")
+    totalCost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="сумма заказа")
     status = models.ForeignKey(OrderStatus, related_name="orders", verbose_name="статус заказа",
                                on_delete=models.PROTECT)
     city = models.CharField(max_length=40, verbose_name="город")
     address = models.CharField(max_length=40, verbose_name="адрес")
+    products = models.ManyToManyField(Product, related_name="orders", verbose_name="товары")
 
 
 class ProductsInOrder(models.Model):

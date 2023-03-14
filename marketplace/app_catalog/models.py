@@ -3,10 +3,9 @@ from django.db import models
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200, db_index=True, verbose_name="название")
-    slug = models.SlugField(max_length=200, db_index=True, verbose_name="ссылка")
-    chosen = models.BooleanField(default=False, verbose_name="избранная категория")
-    icon = models.ImageField(upload_to="categories_icons/", blank=True, verbose_name="иконка")
+    title = models.CharField(max_length=200, db_index=True, verbose_name="название")
+    # href = models.CharField(default="...")
+    # parent_category = models.ForeignKey("self", related_name="")
 
     class Meta:
         ordering = "name",
@@ -14,10 +13,21 @@ class Category(models.Model):
         verbose_name_plural = "категории"
 
     def __str__(self):
-        return self.name
+        return self.title
 
     def get_absolute_url(self):
         pass
+
+
+class CategoryImage(models.Model):
+    image = models.ImageField(upload_to="category_icons/", verbose_name="иконка категории")
+    category = models.ForeignKey(Category, related_name="image", verbose_name="категория", on_delete=models.CASCADE)
+    alt = models.CharField(max_length=50, verbose_name="описание")
+    # src
+
+    class Meta:
+        verbose_name = "иконка категории"
+        verbose_name_plural = "иконки категорий"
 
 
 class Specification(models.Model):
@@ -32,19 +42,34 @@ class Specification(models.Model):
         return self.title
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=50, verbose_name="название тэга")
+
+    class Meta:
+        verbose_name = "тэг"
+        verbose_name_plural = "тэги"
+
+
 class Product(models.Model):
     category = models.ForeignKey(Category, related_name="products", on_delete=models.PROTECT, verbose_name="категория")
-    specifications = models.ManyToManyField(Specification, related_name="products", verbose_name="характеристика")
-    title = models.CharField(max_length=200, db_index=True, verbose_name="название")
-    slug = models.SlugField(max_length=200, db_index=True, verbose_name="ссылка")
-    description = models.TextField(blank=True, null=False, verbose_name="описание")
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="цена")
-    available = models.BooleanField(default=True, verbose_name="наличие")
     count = models.PositiveIntegerField(verbose_name="количество")
+    date = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
+    title = models.CharField(max_length=200, db_index=True, verbose_name="название")
+    description = models.TextField(blank=True, null=False, verbose_name="описание")
+    fillDescription = models.TextField(blank=True, null=False, verbose_name="полное описание")
+    # href = models.CharField(default="...")
+    freeDelivery = models.BooleanField(default=False, verbose_name="бесплатная доставка")
+    tags = models.ManyToManyField(Tag, related_name="products", verbose_name="тэги")
+    specifications = models.ManyToManyField(Specification, related_name="products", verbose_name="характеристика")
+    # rating = models.FloatField(verbose_name="оценка")
+
+    # slug = models.SlugField(max_length=200, db_index=True, verbose_name="ссылка")
+    reviews = models.PositiveIntegerField(default=0, verbose_name="количество отзывов")
+    available = models.BooleanField(default=True, verbose_name="наличие")
     hot_offer = models.BooleanField(default=False, verbose_name="горячее предложение")
     limited_edition = models.BooleanField(default=False, verbose_name="ограниченный тираж")
-    reviews = models.PositiveIntegerField(default=0, verbose_name="количество отзывов")
-    date = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
+    # popular = models.BooleanField(default=False, verbose_name="популярный товар")
 
     class Meta:
         verbose_name = "товар"
@@ -57,14 +82,16 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name="images", on_delete=models.PROTECT, verbose_name="товар")
-    img = models.ImageField(upload_to="products_img/", blank=True, verbose_name="изображение")
+    img = models.ImageField(upload_to="products_images/", blank=True, verbose_name="изображение")
+    # src
 
 
 class Review(models.Model):
-    product = models.ForeignKey(Product, related_name="review", on_delete=models.PROTECT, verbose_name="товар")
+    product = models.ForeignKey(Product, related_name="reviews", on_delete=models.PROTECT, verbose_name="товар")
     author = models.CharField(max_length=200, db_index=True, verbose_name="автор")
     email = models.EmailField(max_length=50, blank=True, verbose_name="электронная почта")
     text = models.TextField(max_length=200, verbose_name="отзыв")
+    rate = models.PositiveIntegerField(verbose_name="оценка")
     date = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
 
     class Meta:
@@ -85,3 +112,14 @@ class Review(models.Model):
             reviews=len(Review.objects.filter(product_id=self.product.id) + 1)
         )
         super().delete(*args, **kwargs)
+
+
+class Sale(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="sale", verbose_name="товар")
+    salePrice = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="цена со скидкой")
+    dateFrom = models.DateTimeField(verbose_name="дата начала действия")
+    dateTo = models.DateTimeField(verbose_name="дата окончания действия")
+
+    class Meta:
+        verbose_name = "скидка"
+        verbose_name_plural = "скидки"
