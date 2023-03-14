@@ -33,7 +33,7 @@ class ProfileDetailView(DetailView):
         return self.request.user.profile
 
 
-class ProfileUpdateView(UpdateView):
+class ProfileInfoUpdateView(UpdateView):
     # template_name
     model = Profile
     # fields

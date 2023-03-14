@@ -1,5 +1,4 @@
-from app_account.views import (ProfileCreateView, ProfileDetailView,
-                               ProfileUpdateView, UserLoginView,
+from app_account.views import (ProfileCreateView, UserLoginView,
                                UserLogoutView)
 from django.urls import path
 
@@ -8,6 +7,7 @@ urlpatterns = [
     path("sign_up/", ProfileCreateView.as_view(), name="registration"),
     path("login/", UserLoginView.as_view(), name="login"),
     path("logout/", UserLogoutView.as_view(), name="logout"),
-    path("", ProfileDetailView.as_view(), name="profile_detail"),
-    path("update/", ProfileUpdateView.as_view(), name="profile_update"),
+    path("", ..., name="profile_details_or_update"),
+    path("password/", ..., name="profile_update_password"),
+    path("avatar/", ..., name="profile_update_avatar"),
 ]
