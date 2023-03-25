@@ -1,15 +1,19 @@
 from django.urls import path
+from app_catalog.views import (CategoryListView, ProductListView, CategoryProductListView,
+                               ProductPopularView, ProductLimitedView, ProductSalesView,
+                               ProductBannersView, TagListView, ProductDetailView,
+                               ReviewCreateView)
 
 app_name = "app_catalog"
 urlpatterns = [
-    path("categories/", ..., name="category_list"),
-    path("catalog/", ..., name="product_list"),
-    path("catalog/<int:pk>/", ..., name="product_list_by_category"),
-    path("products/popular/", ..., name="product_popular"),
-    path("products/limited/", ..., name="product_limited"),
-    path("sales/", ..., name="product_sales"),
-    path("banners/", ..., name="product_banners"),
-    path("tags/", ..., name="tag_list"),
-    path("product/<int:pk>/", ..., name="product_list"),
-    path("product/<int:pk>/review/", ..., name="review_create"),
+    path("categories/", CategoryListView.as_view(), name="category_list"),
+    path("catalog/", ProductListView.as_view(), name="product_list"),
+    path("catalog/<int:pk>/", CategoryProductListView.as_view(), name="product_list_by_category"),
+    path("products/popular/", ProductPopularView.as_view(), name="product_popular"),
+    path("products/limited/", ProductLimitedView.as_view(), name="product_limited"),
+    path("sales/", ProductSalesView.as_view(), name="product_sales"),
+    path("banners/", ProductBannersView.as_view(), name="product_banners"),
+    path("tags/", TagListView.as_view(), name="tag_list"),
+    path("product/<int:pk>/", ProductDetailView.as_view(), name="product_detail"),
+    path("product/<int:pk>/review/", ReviewCreateView.as_view(), name="review_create"),
 ]

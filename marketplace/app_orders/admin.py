@@ -10,5 +10,5 @@ class OrderStatusAdmin(admin.ModelAdmin):
 
 @admin.register(Order)
 class OrderAdmin(admin.ModelAdmin):
-    list_display = "pk", "buyer", "created_at", "status"
+    list_display = "pk", "buyer", "createdAt", "status"
     list_display_links = "pk", "buyer"

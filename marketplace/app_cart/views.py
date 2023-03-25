@@ -1,15 +1,13 @@
-from django.shortcuts import render
-from django.views.decorators.http import require_POST
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import CreateModelMixin
 
 
-@require_POST
-def cart_add(request, product_id, count):
-    pass
+class CartView(CreateModelMixin, GenericAPIView):
+    def get(self):
+        pass
 
+    def post(self):
+        pass
 
-def cart_remove(request, product_id, count):
-    pass
-
-
-def cart_detail(request):
-    pass
+    def delete(self):
+        pass

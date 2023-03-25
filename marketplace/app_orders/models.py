@@ -16,8 +16,8 @@ class OrderStatus(models.Model):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
-    full_name = models.CharField(max_length=100, db_index=True, verbose_name="ФИО")
+    createdAt = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
+    fullName = models.CharField(max_length=100, db_index=True, verbose_name="ФИО")
     email = models.EmailField(max_length=50, blank=True, verbose_name="электронная почта")
     phone = PhoneNumberField(unique=True, null=False, blank=False, verbose_name="номер телефона")
     buyer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="orders", verbose_name="покупатель")

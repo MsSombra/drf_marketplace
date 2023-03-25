@@ -1,3 +1,14 @@
-from django.shortcuts import render
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
 
-# Create your views here.
+
+class OrderListView(ListModelMixin, CreateModelMixin, GenericAPIView):
+    pass
+
+
+class OrderDetailView(RetrieveModelMixin, GenericAPIView):
+    pass
+
+
+class OrderActiveListView(RetrieveModelMixin, GenericAPIView):
+    pass

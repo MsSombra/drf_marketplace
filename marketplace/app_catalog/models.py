@@ -4,16 +4,17 @@ from django.db import models
 
 class Category(models.Model):
     title = models.CharField(max_length=200, db_index=True, verbose_name="название")
-    # href = models.CharField(default="...")
-    # parent_category = models.ForeignKey("self", related_name="")
 
     class Meta:
-        ordering = "name",
+        ordering = "title",
         verbose_name = "категория"
         verbose_name_plural = "категории"
 
     def __str__(self):
         return self.title
+
+    def href(self):
+        return f"/catalog/{self.pk}"
 
     def get_absolute_url(self):
         pass
@@ -23,11 +24,51 @@ class CategoryImage(models.Model):
     image = models.ImageField(upload_to="category_icons/", verbose_name="иконка категории")
     category = models.ForeignKey(Category, related_name="image", verbose_name="категория", on_delete=models.CASCADE)
     alt = models.CharField(max_length=50, verbose_name="описание")
-    # src
+
+    @property
+    def src(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
 
     class Meta:
         verbose_name = "иконка категории"
         verbose_name_plural = "иконки категорий"
+
+
+class SubCategory(models.Model):
+    parent_category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories",
+                                        verbose_name="родительская категория")
+    title = models.CharField(max_length=200, db_index=True, verbose_name="название")
+
+    class Meta:
+        ordering = "title",
+        verbose_name = "подкатегория"
+        verbose_name_plural = "подкатегории"
+
+    def __str__(self):
+        return self.title
+
+    def href(self):
+        return f"/catalog/{self.pk}"
+
+    def get_absolute_url(self):
+        pass
+
+
+class SubCategoryImage(models.Model):
+    image = models.ImageField(upload_to="category_icons/", verbose_name="иконка подкатегории")
+    subcategory = models.ForeignKey(SubCategory, related_name="image", verbose_name="подкатегория",
+                                    on_delete=models.CASCADE)
+    alt = models.CharField(max_length=50, verbose_name="описание")
+
+    @property
+    def src(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+
+    class Meta:
+        verbose_name = "иконка подкатегории"
+        verbose_name_plural = "иконки подкатегорий"
 
 
 class Specification(models.Model):
@@ -39,7 +80,7 @@ class Specification(models.Model):
         verbose_name_plural = "характеристики"
 
     def __str__(self):
-        return self.title
+        return f"{self.name} - {self.value}"
 
 
 class Tag(models.Model):
@@ -57,24 +98,27 @@ class Product(models.Model):
     date = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
     title = models.CharField(max_length=200, db_index=True, verbose_name="название")
     description = models.TextField(blank=True, null=False, verbose_name="описание")
-    fillDescription = models.TextField(blank=True, null=False, verbose_name="полное описание")
-    # href = models.CharField(default="...")
+    fullDescription = models.TextField(blank=True, null=False, verbose_name="полное описание")
     freeDelivery = models.BooleanField(default=False, verbose_name="бесплатная доставка")
     tags = models.ManyToManyField(Tag, related_name="products", verbose_name="тэги")
     specifications = models.ManyToManyField(Specification, related_name="products", verbose_name="характеристика")
-    # rating = models.FloatField(verbose_name="оценка")
+    rating = models.FloatField(verbose_name="оценка")
 
-    # slug = models.SlugField(max_length=200, db_index=True, verbose_name="ссылка")
-    reviews = models.PositiveIntegerField(default=0, verbose_name="количество отзывов")
+    # reviews = models.PositiveIntegerField(default=0, verbose_name="количество отзывов")
     available = models.BooleanField(default=True, verbose_name="наличие")
     hot_offer = models.BooleanField(default=False, verbose_name="горячее предложение")
     limited_edition = models.BooleanField(default=False, verbose_name="ограниченный тираж")
-    # popular = models.BooleanField(default=False, verbose_name="популярный товар")
 
     class Meta:
         verbose_name = "товар"
         verbose_name_plural = "товары"
-        index_together = (("id", "slug"),)
+
+    @property
+    def total_review(self):
+        return len(self.reviews.all())
+
+    def href(self):
+        return f"/catalog/{self.pk}"
 
     def get_absolute_url(self):
         pass
@@ -82,8 +126,17 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, related_name="images", on_delete=models.PROTECT, verbose_name="товар")
-    img = models.ImageField(upload_to="products_images/", blank=True, verbose_name="изображение")
-    # src
+    image = models.ImageField(upload_to="products_images/", blank=True, verbose_name="изображение")
+    alt = models.CharField(max_length=50, verbose_name="описание")
+
+    @property
+    def src(self):
+        if self.image and hasattr(self.image, 'url'):
+            return self.image.url
+
+    class Meta:
+        verbose_name = "изображение товара"
+        verbose_name_plural = "изображения товаров"
 
 
 class Review(models.Model):
@@ -101,17 +154,17 @@ class Review(models.Model):
     def __str__(self):
         return self.text
 
-    def delete(self, *args, **kwargs):
-        Product.objects.filter(id=self.product.id).update(
-            reviews=len(Review.objects.filter(product_id=self.product.id) - 1)
-        )
-        super().delete(*args, **kwargs)
-
-    def save(self, *args, **kwargs):
-        Product.objects.filter(id=self.product.id).update(
-            reviews=len(Review.objects.filter(product_id=self.product.id) + 1)
-        )
-        super().delete(*args, **kwargs)
+    # def delete(self, *args, **kwargs):
+    #     Product.objects.filter(id=self.product.id).update(
+    #         reviews=len(Review.objects.filter(product_id=self.product.id) - 1)
+    #     )
+    #     super().delete(*args, **kwargs)
+    #
+    # def save(self, *args, **kwargs):
+    #     Product.objects.filter(id=self.product.id).update(
+    #         reviews=len(Review.objects.filter(product_id=self.product.id) + 1)
+    #     )
+    #     super().delete(*args, **kwargs)
 
 
 class Sale(models.Model):
