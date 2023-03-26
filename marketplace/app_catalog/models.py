@@ -1,5 +1,5 @@
-from app_account.models import Profile
 from django.db import models
+from app_catalog.validators import validate_svg
 
 
 class Category(models.Model):
@@ -22,7 +22,8 @@ class Category(models.Model):
 
 class CategoryImage(models.Model):
     image = models.ImageField(upload_to="category_icons/", verbose_name="иконка категории")
-    category = models.ForeignKey(Category, related_name="image", verbose_name="категория", on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name="image", verbose_name="категория", on_delete=models.CASCADE,
+                                 validators=[validate_svg])
     alt = models.CharField(max_length=50, verbose_name="описание")
 
     @property

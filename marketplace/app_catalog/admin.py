@@ -1,6 +1,8 @@
-from app_catalog.models import (Category, CategoryImage, Product, ProductImage, Review,
-                                Specification, Sale, Tag, SubCategory, SubCategoryImage)
 from django.contrib import admin
+
+from app_catalog.models import (Category, CategoryImage, Product, ProductImage,
+                                Review, Sale, Specification, SubCategory,
+                                SubCategoryImage, Tag)
 
 
 @admin.register(Category)

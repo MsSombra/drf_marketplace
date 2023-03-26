@@ -1,5 +1,6 @@
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import ListModelMixin, CreateModelMixin, RetrieveModelMixin
+from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
+                                   RetrieveModelMixin)
 
 
 class OrderListView(ListModelMixin, CreateModelMixin, GenericAPIView):

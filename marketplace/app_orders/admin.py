@@ -1,11 +1,6 @@
-from app_orders.models import Order, OrderStatus
 from django.contrib import admin
 
-
-@admin.register(OrderStatus)
-class OrderStatusAdmin(admin.ModelAdmin):
-    list_display = "pk", "title"
-    list_display_links = "pk", "title"
+from app_orders.models import Order
 
 
 @admin.register(Order)

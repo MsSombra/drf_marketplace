@@ -1,5 +1,7 @@
-from app_account.views import (ProfileCreateView, ProfileDetailsView, PasswordUpdateView, AvatarUpdateView)
 from django.urls import path
+
+from app_account.views import (AvatarUpdateView, PasswordUpdateView,
+                               ProfileCreateView, ProfileDetailsView)
 
 app_name = "app_account"
 urlpatterns = [
