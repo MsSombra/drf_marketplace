@@ -1,5 +1,11 @@
 from django.db import models
-from app_catalog.validators import validate_svg
+from app_catalog.validators import is_svg
+from django.core.exceptions import ValidationError
+
+
+def validate_svg(file):
+    if not is_svg(file):
+        raise ValidationError("Файл не svg")
 
 
 class Category(models.Model):
@@ -21,9 +27,9 @@ class Category(models.Model):
 
 
 class CategoryImage(models.Model):
-    image = models.ImageField(upload_to="category_icons/", verbose_name="иконка категории")
-    category = models.ForeignKey(Category, related_name="image", verbose_name="категория", on_delete=models.CASCADE,
-                                 validators=[validate_svg])
+    image = models.FileField(upload_to='category_icons/', blank=True, validators=[validate_svg],
+                             verbose_name="иконка категории")
+    category = models.ForeignKey(Category, related_name="image", verbose_name="категория", on_delete=models.CASCADE)
     alt = models.CharField(max_length=50, verbose_name="описание")
 
     @property
@@ -57,7 +63,8 @@ class SubCategory(models.Model):
 
 
 class SubCategoryImage(models.Model):
-    image = models.ImageField(upload_to="category_icons/", verbose_name="иконка подкатегории")
+    image = models.FileField(upload_to='subcategory_icons/', blank=True, validators=[validate_svg],
+                             verbose_name="иконка подкатегории")
     subcategory = models.ForeignKey(SubCategory, related_name="image", verbose_name="подкатегория",
                                     on_delete=models.CASCADE)
     alt = models.CharField(max_length=50, verbose_name="описание")
