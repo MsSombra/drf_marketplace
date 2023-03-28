@@ -10,6 +10,8 @@ def validate_svg(file):
 
 class Category(models.Model):
     title = models.CharField(max_length=200, db_index=True, verbose_name="название")
+    parent = models.ForeignKey("self", verbose_name="родитель", on_delete=models.SET_NULL, blank=True,
+                               null=True, related_name="subcategories")
 
     class Meta:
         ordering = "title",
@@ -27,56 +29,19 @@ class Category(models.Model):
 
 
 class CategoryImage(models.Model):
-    image = models.FileField(upload_to='category_icons/', blank=True, validators=[validate_svg],
+    src = models.FileField(upload_to='category_icons/', blank=True, validators=[validate_svg],
                              verbose_name="иконка категории")
     category = models.ForeignKey(Category, related_name="image", verbose_name="категория", on_delete=models.CASCADE)
     alt = models.CharField(max_length=50, verbose_name="описание")
 
-    @property
-    def src(self):
-        if self.image and hasattr(self.image, 'url'):
-            return self.image.url
+    # @property
+    # def src(self):
+    #     if self.image and hasattr(self.image, 'url'):
+    #         return self.image.url
 
     class Meta:
         verbose_name = "иконка категории"
         verbose_name_plural = "иконки категорий"
-
-
-class SubCategory(models.Model):
-    parent_category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name="subcategories",
-                                        verbose_name="родительская категория")
-    title = models.CharField(max_length=200, db_index=True, verbose_name="название")
-
-    class Meta:
-        ordering = "title",
-        verbose_name = "подкатегория"
-        verbose_name_plural = "подкатегории"
-
-    def __str__(self):
-        return self.title
-
-    def href(self):
-        return f"/catalog/{self.pk}"
-
-    def get_absolute_url(self):
-        pass
-
-
-class SubCategoryImage(models.Model):
-    image = models.FileField(upload_to='subcategory_icons/', blank=True, validators=[validate_svg],
-                             verbose_name="иконка подкатегории")
-    subcategory = models.ForeignKey(SubCategory, related_name="image", verbose_name="подкатегория",
-                                    on_delete=models.CASCADE)
-    alt = models.CharField(max_length=50, verbose_name="описание")
-
-    @property
-    def src(self):
-        if self.image and hasattr(self.image, 'url'):
-            return self.image.url
-
-    class Meta:
-        verbose_name = "иконка подкатегории"
-        verbose_name_plural = "иконки подкатегорий"
 
 
 class Specification(models.Model):

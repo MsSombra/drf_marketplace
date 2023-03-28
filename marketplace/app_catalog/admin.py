@@ -1,8 +1,7 @@
 from django.contrib import admin
 
 from app_catalog.models import (Category, CategoryImage, Product, ProductImage,
-                                Review, Sale, Specification, SubCategory,
-                                SubCategoryImage, Tag)
+                                Review, Sale, Specification, Tag)
 
 
 @admin.register(Category)
@@ -15,18 +14,6 @@ class CategoryAdmin(admin.ModelAdmin):
 class CategoryImageAdmin(admin.ModelAdmin):
     list_display = "pk", "category", "alt"
     list_display_links = "pk", "category"
-
-
-@admin.register(SubCategory)
-class SubCategoryAdmin(admin.ModelAdmin):
-    list_display = "pk", "title"
-    list_display_links = "pk", "title"
-
-
-@admin.register(SubCategoryImage)
-class SubCategoryImageAdmin(admin.ModelAdmin):
-    list_display = "pk", "subcategory", "alt"
-    list_display_links = "pk", "subcategory"
 
 
 @admin.register(Specification)

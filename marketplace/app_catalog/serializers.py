@@ -2,21 +2,19 @@ from rest_framework import serializers
 
 from app_catalog.models import (
     Tag, Category, CategoryImage,
-    SubCategory, SubCategoryImage,
     )
 
 
-class SubCategoryImageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubCategoryImage
-        fields = ["alt", "src"]
+class RecursiveSerializer(serializers.Serializer):
+    def to_representation(self, value):
+        serializer = self.parent.parent.__class__(value, context=self.context)
+        return serializer.data
 
 
-class SubCategorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = SubCategory
-        fields = ["id", "title", "image", "href"]
-        depth = 2
+class FilterCategoryListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        data = data.filter(parent=None)
+        return super().to_representation(data)
 
 
 class CategoryImageSerializer(serializers.ModelSerializer):
@@ -26,7 +24,10 @@ class CategoryImageSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    subcategories = RecursiveSerializer(many=True)
+
     class Meta:
+        list_serializer_class = FilterCategoryListSerializer
         model = Category
         fields = ["id", "title", "image", "href", "subcategories"]
         depth = 1
