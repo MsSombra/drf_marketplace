@@ -3,8 +3,11 @@ from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
                                    RetrieveModelMixin)
 
-from app_catalog.models import Tag, Category
-from app_catalog.serializers import TagSerializer, CategorySerializer
+from app_catalog.models import Tag, Category, Product
+from app_catalog.serializers import (
+    TagSerializer, CategorySerializer,
+    ProductSerializer
+)
 
 
 class CategoryListView(ListModelMixin, GenericAPIView):
@@ -16,7 +19,11 @@ class CategoryListView(ListModelMixin, GenericAPIView):
 
 
 class ProductListView(ListModelMixin, GenericAPIView):
-    pass
+    serializer_class = ProductSerializer
+    queryset = Product.objects.all()
+
+    def get(self, request: HttpRequest):
+        return self.list(request)
 
 
 class CategoryProductListView(ListModelMixin, GenericAPIView):

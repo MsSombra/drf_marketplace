@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'app_catalog.apps.AppCatalogConfig',
     'app_orders.apps.AppOrdersConfig',
     'app_payment.apps.AppPaymentConfig',
+    'app_settings.apps.AppSettingsConfig',
     'phonenumber_field',
 ]
 
@@ -71,6 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'app_settings.context_processors.load_settings',
             ],
         },
     },
@@ -137,3 +139,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 CART_SESSION_ID = 'cart'
 
 LOGIN_REDIRECT_URL = '/'
+
+APP_SETTINGS_PATH = os.path.join(BASE_DIR, "settings.yaml")

@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from app_catalog.models import (
     Tag, Category, CategoryImage,
+    Product,
     )
 
 
@@ -37,3 +38,11 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ["id", "name"]
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Product
+        fields = ["id", "category", "price", "count", "date", "title", "description", "href", "freeDelivery",
+                  "images", "tags", "reviews", "rating"]
+        depth = 1

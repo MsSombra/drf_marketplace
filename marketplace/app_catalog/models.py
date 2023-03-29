@@ -63,6 +63,9 @@ class Tag(models.Model):
         verbose_name = "тэг"
         verbose_name_plural = "тэги"
 
+    def __str__(self):
+        return self.name
+
 
 class Product(models.Model):
     category = models.ForeignKey(Category, related_name="products", on_delete=models.PROTECT, verbose_name="категория")
@@ -92,6 +95,9 @@ class Product(models.Model):
 
     def href(self):
         return f"/catalog/{self.pk}"
+
+    def __str__(self):
+        return self.title
 
     def get_absolute_url(self):
         pass
