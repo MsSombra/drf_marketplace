@@ -30,7 +30,7 @@ class Category(models.Model):
 
 class CategoryImage(models.Model):
     src = models.FileField(upload_to='category_icons/', blank=True, validators=[validate_svg],
-                             verbose_name="иконка категории")
+                           verbose_name="иконка категории")
     category = models.ForeignKey(Category, related_name="image", verbose_name="категория", on_delete=models.CASCADE)
     alt = models.CharField(max_length=50, verbose_name="описание")
 
