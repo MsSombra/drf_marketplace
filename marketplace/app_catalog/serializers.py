@@ -62,7 +62,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(slug_field="id", read_only=True)
     price = serializers.IntegerField()
     date = serializers.SerializerMethodField(method_name="get_date_format")
-    images = serializers.SlugRelatedField(slug_field="image", read_only=True, many=True)
+    images = serializers.SlugRelatedField(slug_field="src", read_only=True, many=True)
     tags = serializers.SlugRelatedField(slug_field="name", read_only=True, many=True)
 
     class Meta:
