@@ -1,6 +1,8 @@
 import sys
-from django.apps import AppConfig
+
 from app_settings.utils import SettingFileLoader
+from django.apps import AppConfig
+
 from marketplace import settings
 
 

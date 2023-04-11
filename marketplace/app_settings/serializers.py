@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from app_settings.models import SiteSettings
+from rest_framework import serializers
 
 
 class SiteSettingsSerializer(serializers.ModelSerializer):

@@ -1,23 +1,17 @@
-from django.http import HttpRequest
-from django.urls import reverse
-from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import (CreateModelMixin, ListModelMixin,
-                                   RetrieveModelMixin, UpdateModelMixin)
-
 from app_account.models import Profile
+from django.http import HttpRequest
+from rest_framework.views import APIView
+from rest_framework.generics import GenericAPIView
+from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
+from app_account.serializers import ProfileSerializer
+from rest_framework.response import Response
 
 
-class ProfileCreateView(CreateModelMixin, GenericAPIView):  # ListModelMixin
+class ProfileDetailsView(APIView):
     def get(self, request: HttpRequest):
-        pass
-
-    def post(self, request: HttpRequest):
-        pass
-
-
-class ProfileDetailsView(UpdateModelMixin, RetrieveModelMixin, GenericAPIView):
-    def get(self, request: HttpRequest):
-        pass
+        profile = Profile.objects.filter(user__id=self.request.user.id)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
 
     def post(self, request: HttpRequest):
         pass

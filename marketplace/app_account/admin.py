@@ -1,6 +1,5 @@
-from django.contrib import admin
-
 from app_account.models import Profile, ProfileAvatar
+from django.contrib import admin
 
 
 @admin.register(Profile)

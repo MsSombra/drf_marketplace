@@ -1,7 +1,6 @@
-from django.db import models
-
 from app_account.models import Profile
 from app_catalog.models import Product
+from django.db import models
 
 
 class Basket(models.Model):

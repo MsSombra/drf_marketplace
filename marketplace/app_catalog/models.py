@@ -1,6 +1,6 @@
-from django.db import models
 from app_catalog.validators import is_svg
 from django.core.exceptions import ValidationError
+from django.db import models
 
 
 def validate_svg(file):
@@ -94,7 +94,7 @@ class Product(models.Model):
         return len(self.reviews.all())
 
     def href(self):
-        return f"/catalog/{self.pk}"
+        return f"/product/{self.pk}"
 
     def __str__(self):
         return self.title

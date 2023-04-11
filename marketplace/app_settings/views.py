@@ -1,5 +1,4 @@
 from app_settings.models import SiteSettings
-
 from app_settings.serializers import SiteSettingsSerializer
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin

@@ -1,9 +1,8 @@
+from app_account.models import Profile
+from app_catalog.models import Product
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
-
-from app_account.models import Profile
-from app_catalog.models import Product
 
 
 class Order(models.Model):

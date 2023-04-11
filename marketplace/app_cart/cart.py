@@ -1,11 +1,10 @@
 from decimal import Decimal
 
+from app_cart.models import Basket
+from app_catalog.models import Product
 from django.conf import settings
 from django.db.models import F, Sum
 from django.http import HttpRequest
-
-from app_cart.models import Basket
-from app_catalog.models import Product
 
 
 class Cart(object):

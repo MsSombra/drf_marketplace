@@ -1,10 +1,5 @@
+from app_catalog.models import Category, CategoryImage, Product, Tag
 from rest_framework import serializers
-from time import strftime
-
-from app_catalog.models import (
-    Tag, Category, CategoryImage,
-    Product,
-    )
 
 
 class RecursiveSerializer(serializers.Serializer):
@@ -22,7 +17,7 @@ class FilterCategoryListSerializer(serializers.ListSerializer):
 class CategoryImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = CategoryImage
-        fields = "__all__"
+        fields = "id", "src"
 
 
 class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
@@ -44,7 +39,8 @@ class RelatedFieldAlternative(serializers.PrimaryKeyRelatedField):
 
 class CategorySerializer(serializers.ModelSerializer):
     subcategories = RecursiveSerializer(many=True)
-    image = RelatedFieldAlternative(queryset=CategoryImage.objects.all(), serializer=CategoryImageSerializer)
+    image = CategoryImageSerializer(read_only=True)
+    # image = RelatedFieldAlternative(queryset=CategoryImage.objects.all(), serializer=CategoryImageSerializer)
 
     class Meta:
         model = Category

@@ -12,6 +12,9 @@ class Profile(models.Model):
         verbose_name = "профиль"
         verbose_name_plural = "профили"
 
+    def __str__(self):
+        return f"Профиль пользователя {self.fullName}"
+
 
 class ProfileAvatar(models.Model):
     image = models.ImageField(upload_to="profile_avatars/", blank=True, verbose_name="аватар")
