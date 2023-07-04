@@ -1,6 +1,6 @@
-from app_account.views import (AvatarUpdateView, PasswordUpdateView,
-                               ProfileDetailsView)
 from django.urls import path
+
+from .views import AvatarUpdateView, PasswordUpdateView, ProfileDetailsView
 
 app_name = "app_account"
 urlpatterns = [
