@@ -1,9 +1,10 @@
+from django.urls import path
+
 from app_catalog.views import (CategoryListView, CategoryProductListView,
                                ProductBannersView, ProductDetailView,
                                ProductLimitedView, ProductListView,
                                ProductPopularView, ProductSalesView,
                                ReviewCreateView, TagListView)
-from django.urls import path
 
 app_name = "app_catalog"
 urlpatterns = [
