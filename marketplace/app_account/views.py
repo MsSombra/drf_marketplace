@@ -7,8 +7,8 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Profile
-from .serializers import AvatarSerializer, ProfileSerializer
+from app_account.models import Profile
+from app_account.serializers import AvatarSerializer, ProfileSerializer
 
 
 class ProfileDetailsView(RetrieveUpdateAPIView):
