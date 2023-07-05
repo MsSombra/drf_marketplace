@@ -3,13 +3,12 @@ from decimal import Decimal
 
 from app_catalog.models import Product
 from django.conf import settings
-from django.http import HttpRequest
 
 
 class Cart:
-    def __init__(self, request: HttpRequest) -> None:
+    def __init__(self, session) -> None:
         """ Создание корзины """
-        self.session = request.session
+        self.session = session
         products = self.session.get(settings.CART_SESSION_ID)
         if not products:
             products = self.session[settings.CART_SESSION_ID] = {}

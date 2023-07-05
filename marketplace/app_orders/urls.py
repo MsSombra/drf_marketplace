@@ -1,6 +1,7 @@
+from django.urls import path
+
 from app_orders.views import (OrderActiveListView, OrderDetailView,
                               OrderListView)
-from django.urls import path
 
 app_name = "app_orders"
 urlpatterns = [

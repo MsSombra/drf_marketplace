@@ -67,10 +67,6 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 
-#     @property
-#     def total_review(self):
-#         return len(self.reviews.all())
-
 
 class ProductImage(models.Model):
     """ Модель изображения товара """

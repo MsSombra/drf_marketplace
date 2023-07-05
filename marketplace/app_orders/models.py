@@ -1,52 +1,104 @@
+from decimal import Decimal
+
 from app_account.models import Profile
 from app_catalog.models import Product
-from django.core.validators import MaxValueValidator, MinValueValidator
+from app_payment.models import PaymentTypeChoices
+from app_settings.models import SiteSettings
 from django.db import models
-from phonenumber_field.modelfields import PhoneNumberField
+
+from app_orders.choices import DeliveryChoices, StatusChoices
+
+
+class OrderItem(models.Model):
+    """ Модель товара в заказе """
+    order = models.ForeignKey("Order", on_delete=models.CASCADE, related_name="products", verbose_name="заказ")
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="order_items", verbose_name="товар")
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='цена')
+    quantity = models.PositiveIntegerField(default=1, verbose_name='количество')
+
+    class Meta:
+        verbose_name = "товары"
+        verbose_name_plural = "товары"
+
+    @property
+    def total_cost(self):
+        return Decimal(self.price * self.quantity)
+
+    def __str__(self):
+        return f"Order {self.pk} - Product {self.product.name}"
+
+
+class DeliveryType(models.Model):
+    """ Модель типа доставки """
+    type = models.CharField(choices=DeliveryChoices.choices, default=DeliveryChoices.regular, verbose_name="тип")
+    cost = models.DecimalField(decimal_places=2, max_digits=5, verbose_name="Цена доставки")
+
+    class Meta:
+        verbose_name = "тип доставки"
+        verbose_name_plural = "типы доставки"
+
+    def save(self, *args, **kwargs) -> None:
+        if self.type not in [d.type for d in DeliveryType.objects.all()]:
+            super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.type
 
 
 class Order(models.Model):
-    createdAt = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
-    fullName = models.CharField(max_length=100, db_index=True, verbose_name="ФИО")
-    email = models.EmailField(max_length=50, blank=True, verbose_name="электронная почта")
-    phone = PhoneNumberField(unique=True, null=False, blank=False, verbose_name="номер телефона")
+    """ Модель заказа """
     buyer = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="orders", verbose_name="покупатель")
-    deliveryType = models.CharField(max_length=30, verbose_name="тип доставки")
-    paymentType = models.CharField(max_length=30, verbose_name="тип оплаты")
-    delivery_price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='Цена доставки', default=0)
-    # totalCost = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="сумма заказа")
-    status = models.CharField(max_length=150, verbose_name='статус платежа', blank=True, null=True)
-    city = models.CharField(max_length=40, verbose_name="город")
-    address = models.CharField(max_length=40, verbose_name="адрес")
-    card_number = models.PositiveIntegerField(validators=[MinValueValidator(10000000), MaxValueValidator(99999999)],
-                                              verbose_name='Номер карты')
-    payment_code = models.IntegerField(default=0, verbose_name='Код оплаты')
-    # products = models.ManyToManyField(Product, related_name="orders", verbose_name="товары")
+    products = models.ManyToManyField(Product,
+                                      through=OrderItem,
+                                      through_fields=("order", "product"),
+                                      verbose_name="товары")
+    createdAt = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
+    deliveryType = models.ForeignKey(DeliveryType,
+                                     on_delete=models.PROTECT,
+                                     related_name="orders",
+                                     default=1,
+                                     verbose_name="тип доставки")
+    paymentType = models.CharField(choices=PaymentTypeChoices.choices,
+                                   default=PaymentTypeChoices.own_online,
+                                   verbose_name="тип оплаты")
+    status = models.CharField(choices=StatusChoices.choices,
+                              default=StatusChoices.accepted,
+                              verbose_name="статус платежа")
+    city = models.CharField(max_length=40, default="", verbose_name="город")
+    address = models.CharField(max_length=100, default="", verbose_name="адрес")
 
     class Meta:
         ordering = ('-createdAt',)
         verbose_name = "заказ"
         verbose_name_plural = "заказы"
 
+    def product_price(self, product: Product):
+        """ Возвращает цену товара"""
+        item: OrderItem = OrderItem.objects.get(product=product, order=self)
+        return item.price
+
+    def product_count(self, product: Product):
+        """ Возвращает количество товара """
+        item: OrderItem = OrderItem.objects.get(product=product, order=self)
+        return item.quantity
+
     def __str__(self):
-        return f"Заказ #{self.pk}"
+        return f"Заказ #{self.pk} - {self.buyer.fullName}"
 
     def totalCost(self):
-        return sum(prod.get_cost() for prod in self.products.all()) + self.delivery_price
+        """ Возвращает стоимость заказа (стоимость товаров, доставки) """
+        items = OrderItem.objects.filter(order=self)
+        items_cost = sum(i.total_cost for i in items)
 
+        if not self.deliveryType:
+            return items_cost
 
-class ProductsInOrder(models.Model):
-    order = models.ForeignKey(Order, related_name='products', on_delete=models.CASCADE, verbose_name='заказ')
-    product = models.ForeignKey(Product, related_name='order_items', on_delete=models.CASCADE, verbose_name='товар')
-    price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name='цена')
-    quantity = models.PositiveIntegerField(default=1, verbose_name='количество')
+        if self.deliveryType.type == "regular":
+            settings = SiteSettings.load()
+            edge = settings.edge_for_free_delivery
 
-    def __str__(self):
-        return '{}'.format(self.id)
+            delivery = self.deliveryType.cost if items_cost < edge else 0
+        else:
+            delivery = self.deliveryType.cost
 
-    def get_cost(self):
-        return self.price * self.quantity
-
-    class Meta:
-        verbose_name = "товары"
-        verbose_name_plural = "товары"
+        return items_cost + delivery
