@@ -1,5 +1,5 @@
-from rest_framework.generics import GenericAPIView
+from rest_framework.views import APIView
 
 
-class PaymentView(GenericAPIView):
+class PaymentView(APIView):
     pass

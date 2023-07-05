@@ -1,3 +1,6 @@
 from django.db import models
 
-# Create your models here.
+
+class PaymentTypeChoices(models.TextChoices):
+    own_online = "own online"
+    someone_online = "someone online"
