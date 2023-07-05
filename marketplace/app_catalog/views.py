@@ -26,9 +26,9 @@ class CategoryListView(ListAPIView):
 
 
 class ProductListView(ListAPIView):
-    serializer_class = ProductSerializer
-    queryset = Product.objects.all()
     pagination_class = CustomPagination
+    serializer_class = ProductShortSerializer
+    queryset = Product.objects.all()
 
 
 # class CategoryProductListView(ListModelMixin, GenericAPIView):

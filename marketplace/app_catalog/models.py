@@ -95,7 +95,7 @@ class ProductImage(models.Model):
 class Category(models.Model):
     """ Модель категории товаров """
     title = models.CharField(max_length=100, unique=True, db_index=True, verbose_name="название")
-    picture = models.ImageField(upload_to="category_icons/", blank=True, validators=[validate_svg],
+    picture = models.FileField(upload_to="category_icons/", blank=True, validators=[validate_svg],
                                 verbose_name="иконка категории")
     parent = models.ForeignKey("self", verbose_name="родитель", on_delete=models.SET_NULL, blank=True,
                                null=True, related_name="subcategories")

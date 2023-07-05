@@ -86,6 +86,7 @@ class ProductShortSerializer(ProductSerializer):
         optional_fields = ('tags',)
 
     reviews = serializers.SerializerMethodField("get_reviews_amount")
+    tags = serializers.SlugRelatedField(slug_field="name", read_only=True, many=True)
 
     @classmethod
     def get_reviews_amount(cls, obj: Product) -> int:
