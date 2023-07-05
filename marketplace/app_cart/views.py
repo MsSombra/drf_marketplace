@@ -1,8 +1,8 @@
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import CreateModelMixin
+from app_catalog.serializers import ProductShortSerializer
 
 
-class CartView(CreateModelMixin, GenericAPIView):
+class CartView(GenericAPIView):
     def get(self):
         pass
 
