@@ -11,7 +11,7 @@ from app_orders.choices import DeliveryChoices, StatusChoices
 
 class OrderItem(models.Model):
     """ Модель товара в заказе """
-    order = models.ForeignKey("Order", on_delete=models.CASCADE, related_name="products", verbose_name="заказ")
+    order = models.ForeignKey("Order", on_delete=models.CASCADE, related_name="product", verbose_name="заказ")
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="order_items", verbose_name="товар")
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0, verbose_name='цена')
     quantity = models.PositiveIntegerField(default=1, verbose_name='количество')
@@ -30,7 +30,10 @@ class OrderItem(models.Model):
 
 class DeliveryType(models.Model):
     """ Модель типа доставки """
-    type = models.CharField(choices=DeliveryChoices.choices, default=DeliveryChoices.regular, verbose_name="тип")
+    type = models.CharField(choices=DeliveryChoices.choices,
+                            max_length=10,
+                            default=DeliveryChoices.regular,
+                            verbose_name="тип")
     cost = models.DecimalField(decimal_places=2, max_digits=5, verbose_name="Цена доставки")
 
     class Meta:
@@ -59,9 +62,11 @@ class Order(models.Model):
                                      default=1,
                                      verbose_name="тип доставки")
     paymentType = models.CharField(choices=PaymentTypeChoices.choices,
+                                   max_length=20,
                                    default=PaymentTypeChoices.own_online,
                                    verbose_name="тип оплаты")
     status = models.CharField(choices=StatusChoices.choices,
+                              max_length=20,
                               default=StatusChoices.accepted,
                               verbose_name="статус платежа")
     city = models.CharField(max_length=40, default="", verbose_name="город")
