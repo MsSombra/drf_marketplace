@@ -18,8 +18,7 @@ class Product(models.Model):
     title = models.CharField(max_length=100, unique=True, db_index=True, verbose_name="название")
     fullDescription = models.TextField(default="", blank=True, null=False, verbose_name="полное описание")
     freeDelivery = models.BooleanField(default=False, verbose_name="бесплатная доставка")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
-    updated_at = models.DateTimeField(auto_now_add=True, verbose_name="дата обновления")
+    date = models.DateTimeField(auto_now_add=True, verbose_name="дата создания")
     specifications = models.ManyToManyField("Specification", blank=True,
                                             related_name="products", verbose_name="характеристика")
     tags = models.ManyToManyField("Tag", related_name="products", blank=True, verbose_name="тэги")
@@ -40,11 +39,6 @@ class Product(models.Model):
         return self.count > 0
 
     @property
-    def date(self):
-        """ Возвращает дату создания """
-        return self.created_at
-
-    @property
     def description(self) -> str:
         """ Возвращает краткое описание (первые 100 символов) """
         return self.fullDescription[:100] + "..."
@@ -53,10 +47,10 @@ class Product(models.Model):
     def rating(self) -> float:
         """ Возвращает среднее значение рейтинга товара """
         try:
-            return round(Review.objects.select_related("product"). \
-                         filter(product=self). \
-                         aggregate(models.Avg("rate")). \
-                         get("rate__avg"), 1)
+            return round(Review.objects.select_related("product")
+                         .filter(product=self)
+                         .aggregate(models.Avg("rate"))
+                         .get("rate__avg"), 1)
         except TypeError:
             return 0
 

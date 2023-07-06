@@ -99,7 +99,7 @@ class SaleSerializer(serializers.ModelSerializer):
         model = Sale
         fields = ("id", "price", "salePrice", "dateFrom", "dateTo", "title", "href", "images")
 
-    id = serializers.IntegerField(source="product.id")
+    id = serializers.CharField(source="product.id")
     price = serializers.DecimalField(source="product.price", decimal_places=2, max_digits=10)
     title = serializers.CharField(source="product.title")
     href = serializers.CharField(source="product.href")

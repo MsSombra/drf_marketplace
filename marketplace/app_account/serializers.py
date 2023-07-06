@@ -17,7 +17,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 class PasswordChangeSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("password", )
+        fields = ("password", "passwordCurrent")
 
 
 class AvatarSerializer(serializers.ModelSerializer):
