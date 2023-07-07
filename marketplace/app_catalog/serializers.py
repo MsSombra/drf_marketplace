@@ -65,7 +65,7 @@ class ProductSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(slug_field="id", read_only=True)
     tags = serializers.SlugRelatedField(slug_field="name", read_only=True, many=True)
     rating = serializers.FloatField()
-    price = serializers.IntegerField()
+    price = serializers.FloatField()
     reviews = ReviewSerializer(many=True)
     date = serializers.SerializerMethodField(method_name="get_date_format")
     images = serializers.SerializerMethodField('get_images')
@@ -80,17 +80,41 @@ class ProductSerializer(serializers.ModelSerializer):
         return [i.image.url for i in obj.images.all()]
 
 
-class ProductShortSerializer(ProductSerializer):
+class ProductShortSerializer(serializers.ModelSerializer):
     """ Укороченная версия сериализатора товара """
-    class Meta(ProductSerializer.Meta):
-        optional_fields = ('tags',)
 
+    class Meta:
+        model = Product
+        fields = ("id", "category", "price", "count", "date", "title", "description", "href", "freeDelivery",
+                  "images", "tags", "reviews", "rating")
+        optional_fields = ("id", )
+        depth = 1
+
+    id = serializers.SerializerMethodField(method_name="get_id")
+    category = serializers.SlugRelatedField(slug_field="id", read_only=True)
+    rating = serializers.FloatField()
+    price = serializers.FloatField()
     reviews = serializers.SerializerMethodField("get_reviews_amount")
     tags = serializers.SlugRelatedField(slug_field="name", read_only=True, many=True)
+    date = serializers.SerializerMethodField(method_name="get_date_format")
+    images = serializers.SerializerMethodField('get_images')
+
+    @classmethod
+    def get_id(cls, obj: Product) -> int:
+        return obj.pk
 
     @classmethod
     def get_reviews_amount(cls, obj: Product) -> int:
         return obj.reviews.count()
+
+    @classmethod
+    def get_date_format(cls, obj: Product) -> str:
+        fmt = "The %b %d %Y %I:%M:%S %Z%z"
+        return obj.date.strftime(fmt)
+
+    @classmethod
+    def get_images(cls, obj: Product):
+        return [i.image.url for i in obj.images.all()]
 
 
 class SaleSerializer(serializers.ModelSerializer):

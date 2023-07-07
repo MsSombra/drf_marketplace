@@ -29,30 +29,30 @@ class Cart:
     def __repr__(self):
         return json.dumps(self.products)
 
-    def add(self, product, quantity: int = 1) -> None:
+    def add(self, product, quantity: str = "1") -> None:
         """ Добавление товара в корзину или изменение его количества """
-        product_id = str(product["id"])
-        if product_id not in self.products:
+        product_id = str(product.pk)
+        if product_id not in self.products.keys():
             self.products[product_id] = {
                 "count": quantity,
                 "price": str(product.price)
             }
         else:
-            self.products[product_id]["count"] += quantity
+            self.products[product_id]["count"] += int(quantity)
 
         self.save()
 
-    def reduce(self, product, quantity: int) -> None:
+    def reduce(self, product, quantity: str) -> None:
         """ Уменьшить количество товара или убрать его из корзины """
         product_id = str(product.id)
 
-        if product_id not in self.products:
+        if product_id not in self.products.keys():
             return
 
-        if not quantity or self.products[product_id]["count"] <= 1:
+        if quantity is None or self.products[product_id]["count"] <= 1:
             self.remove(product)
         else:
-            self.products[product_id]["count"] -= quantity
+            self.products[product_id]["count"] -= int(quantity)
 
         self.save()
 
@@ -75,7 +75,7 @@ class Cart:
     def get_total_cost(self):
         """ Возвращает стоимость всех товаров в корзине """
         return sum(
-            Decimal(item["price"] * item["quantity"])
+            Decimal(item["price"] * item["count"])
             for item in self.products.values()
         )
 
