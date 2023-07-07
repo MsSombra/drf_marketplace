@@ -1,10 +1,11 @@
-from rest_framework.generics import GenericAPIView
-from app_catalog.serializers import ProductShortSerializer
-from app_cart.cart import Cart
 from app_catalog.models import Product
+from app_catalog.serializers import ProductShortSerializer
 from django.db.models import QuerySet
+from rest_framework.generics import GenericAPIView
 from rest_framework.request import Request
 from rest_framework.response import Response
+
+from app_cart.cart import Cart
 
 
 class CartView(GenericAPIView):

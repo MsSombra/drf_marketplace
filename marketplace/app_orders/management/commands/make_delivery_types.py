@@ -1,7 +1,7 @@
+from app_settings.models import SiteSettings
 from django.core.management import BaseCommand
 
 from app_orders.models import DeliveryType
-from app_settings.models import SiteSettings
 
 
 class Command(BaseCommand):

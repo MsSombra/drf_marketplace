@@ -46,7 +46,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return [
             {
                 "id": p.pk,
-                "category": p.category,
+                "category": p.category.pk,
                 "price": obj.product_price(p),
                 "count": obj.product_count(p),
                 "date": p.date,
@@ -57,7 +57,7 @@ class OrderSerializer(serializers.ModelSerializer):
                 "images": [i.image.url for i in p.images.all()],
                 "tags": [i.name for i in p.tags.all()],
                 "reviews": p.reviews.count(),
-                "rating": p.raiting
+                "rating": p.rating
             }
             for p in obj.products.all()
         ]
