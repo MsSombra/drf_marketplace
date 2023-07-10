@@ -57,7 +57,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "app_cart.middlewares.SetCartMiddleware"
+    "app_cart.middlewares.SetCartMiddleware",
+    "request_logging.middleware.LoggingMiddleware",
 ]
 
 ROOT_URLCONF = 'marketplace.urls'
@@ -146,3 +147,20 @@ CART_SESSION_ID = 'cart'
 LOGIN_REDIRECT_URL = '/'
 
 APP_SETTINGS_PATH = os.path.join(BASE_DIR, "settings.yaml")
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
