@@ -1,5 +1,4 @@
 asgiref==3.6.0
-diploma-frontend @ file:///home/kate/PycharmProjects/python_django_diploma/diploma-frontend-0.2.tar.gz
 Django==4.1.7
 django-filter==23.2
 django-phonenumber-field==7.0.2
