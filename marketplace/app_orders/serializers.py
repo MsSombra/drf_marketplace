@@ -30,6 +30,7 @@ class OrderSerializer(serializers.ModelSerializer):
     phone = serializers.CharField(source="buyer.phone")
     email = serializers.EmailField(source="buyer.email")
 
+    deliveryType = serializers.CharField(source="deliveryType.type")
     products = serializers.SerializerMethodField("get_products")
 
     @classmethod
