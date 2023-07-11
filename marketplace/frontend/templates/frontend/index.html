@@ -19,7 +19,7 @@
                 </div>
               </div>
               <div class="BannersHomeBlock-block" v-if="banner.images.length > 0">
-                <div class="BannersHomeBlock-img"><img :src="banner.images[0].src" :alt="banner.images[0].alt"/>
+                <div class="BannersHomeBlock-img"><img :src="banner.images[0]" :alt="banner.title"/>
                 </div>
               </div>
             </div>
@@ -41,7 +41,7 @@
             <!-- Получаем популярные товары -->
             <div v-for="card in popularCards" class="Card">
               <a class="Card-picture" :href="`/product/${card.id}`">
-                <img v-if="card.images.length > 0" :src="card.images[0].src" :alt="card.images[0].alt"/></a>
+                <img v-if="card.images.length > 0" :src="card.images[0]" :alt="card.title"/></a>
               <div class="Card-content">
                 <strong class="Card-title"><a :href="`/product/${card.id}`">${ card.title }$</a>
                 </strong>
@@ -145,7 +145,7 @@
             <div class="Cards">
               <div v-for="card in limitedCards" class="Card">
                 <a class="Card-picture" :href="`/product/${card.id}`">
-                  <img v-if="card.images.length > 0" :src="card.images[0].src" :alt="card.images[0].alt"/></a>
+                  <img v-if="card.images.length > 0" :src="card.images[0]" :alt="card.title"/></a>
                 <div class="Card-content">
                   <strong class="Card-title"><a :href="`/product/${card.id}`">${ card.title }$</a>
                   </strong>
