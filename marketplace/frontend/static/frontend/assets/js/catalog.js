@@ -40,10 +40,7 @@ var mix = {
                         console.warn('Ошибка получения тегов')
                 })
         },
-        getCatalogs(page) {
-            if(typeof page === "undefined") {
-                page = 1
-            }
+        getCatalogs(page = 1) {
             const PAGE_LIMIT = 20
             const tags = this.topTags.filter(tag => !!tag.selected).map(tag => tag.id)
             const min = document.querySelector('input[name=minPrice]').value
@@ -56,15 +53,15 @@ var mix = {
                 this.filter.maxPrice = max
             }
             this.getData("/api/catalog", {
-                page,
-                category: this.category,
-                sort: this.selectedSort ? this.selectedSort.id : null,
-                sortType: this.selectedSort ? this.selectedSort.selected : null,
                 filter: {
                     ...this.filter,
                     minPrice: min,
                     maxPrice: max
                 },
+                currentPage: page,
+                category: this.category,
+                sort: this.selectedSort ? this.selectedSort.id : null,
+                sortType: this.selectedSort ? this.selectedSort.selected : null,
                 tags,
                 limit: PAGE_LIMIT
             })
@@ -83,15 +80,16 @@ var mix = {
             ? { ...this.sortRules?.[1], selected: 'inc' }
             :  null
 
+        if(location.pathname.startsWith('/catalog/')) {
+            const category = location.pathname.replace('/catalog/', '').replace('/', '')
+            this.category = category.length ? Number(category) : null
+        }
+
         this.getCatalogs()
         this.getTags()
-        this.category = location.pathname.startsWith('/catalog/')
-            ? Number(location.pathname.replace('/catalog/', ''))
-            : null
     },
     data() {
         return {
-            pages: 1,
             category: null,
             catalogCards: [],
             currentPage: null,
