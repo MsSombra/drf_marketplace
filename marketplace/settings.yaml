@@ -1,0 +1,6 @@
+cost_express_delivery: '500.00'
+edge_for_free_delivery: '2000.00'
+cost_usual_delivery: '200.00'
+popular_products_amount: '10'
+limited_products_amount: '5'
+banners_amount: '4'
